@@ -4,44 +4,28 @@
 
 [![Python](https://img.shields.io/badge/Python-3.12+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
 [![Flask](https://img.shields.io/badge/Flask-3.0+-000000?style=for-the-badge&logo=flask&logoColor=white)](https://flask.palletsprojects.com/)
-[![SQLAlchemy](https://img.shields.io/badge/SQLAlchemy-ORM-red?style=for-the-badge&logo=sqlalchemy&logoColor=white)](https://www.sqlalchemy.org/)
-[![Pydantic](https://img.shields.io/badge/Pydantic-Validation-e91e63?style=for-the-badge&logo=pydantic&logoColor=white)](https://docs.pydantic.dev/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+[![Docker](https://img.shields.io/badge/Docker-Enabled-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
 [![Swagger](https://img.shields.io/badge/Swagger-OpenAPI-85EA2D?style=for-the-badge&logo=swagger&logoColor=black)](https://swagger.io/)
 
-*API RESTful desenvolvida em Python para gerenciamento completo de produtos, construída com arquitetura em camadas, validação de dados e documentação Swagger/OpenAPI.*
-
-[Visão Geral](#-visão-geral) •
-[Arquitetura](#-arquitetura-do-projeto) •
-[Estrutura](#-estrutura-de-diretórios) •
-[Endpoints](#-endpoints-da-api) •
-[Como Executar](#-como-executar) •
-[Tratamento de Erros](#-tratamento-de-erros)
+*API RESTful robusta desenvolvida em Python para gerenciamento de catálogo de produtos, integrada ao banco de dados PostgreSQL executado em containers Docker e documentada com Swagger/OpenAPI.*
 
 </div>
 
 ---
 
-# 📌 Visão Geral
+# 📌 Principais Recursos
 
-Esta aplicação fornece uma API RESTful para gerenciamento de produtos utilizando **Flask**, **SQLAlchemy**, **Pydantic** e **Swagger**.
-
-O projeto foi desenvolvido seguindo princípios de **Clean Code**, **Arquitetura em Camadas** e **Repository Pattern**, promovendo organização, facilidade de manutenção e escalabilidade.
-
-## ✨ Funcionalidades
-
-- ✅ CRUD completo de produtos
-- ✅ Validação automática utilizando Pydantic
-- ✅ Persistência de dados com SQLAlchemy ORM
-- ✅ Documentação interativa com Swagger UI
-- ✅ Tratamento global de exceções
-- ✅ Arquitetura em camadas
-- ✅ Código organizado e de fácil manutenção
+- ✅ **Persistência em Tempo Real:** Banco de dados PostgreSQL executando em container Docker com armazenamento persistente via volumes.
+- ✅ **CRUD Completo:** Endpoints para criação, consulta, atualização e remoção de produtos.
+- ✅ **Integração Facilitada:** API preparada para consumo por aplicações Web, Mobile e Front-end.
+- ✅ **Validação de Dados:** Utilização do Pydantic para garantir integridade dos dados recebidos.
+- ✅ **Arquitetura em Camadas:** Organização em Routes, Services, Repositories, Schemas e Models.
+- ✅ **Documentação Interativa:** Swagger/OpenAPI disponível diretamente no navegador.
 
 ---
 
-# 🏗 Arquitetura do Projeto
-
-A aplicação segue uma arquitetura dividida em responsabilidades bem definidas.
+# 🏗 Arquitetura
 
 ```text
           Cliente
@@ -66,27 +50,29 @@ A aplicação segue uma arquitetura dividida em responsabilidades bem definidas.
                SQLAlchemy ORM
                      │
                      ▼
-                  Database
+               PostgreSQL
+                (Docker)
 ```
 
 ---
 
-# 📁 Estrutura de Diretórios
+# 📁 Estrutura do Projeto
 
 ```text
 flask-products-api/
 │
 ├── app/
-│   ├── models/              # Modelos SQLAlchemy
-│   ├── repositories/        # Acesso ao banco de dados
-│   ├── routes/              # Endpoints HTTP
-│   ├── schemas/             # Validação (Pydantic)
-│   ├── services/            # Regras de negócio
-│   ├── errors.py            # Tratamento global de erros
-│   ├── extensions.py        # Inicialização das extensões
-│   └── __init__.py          # Factory da aplicação
+│   ├── models/
+│   ├── repositories/
+│   ├── routes/
+│   ├── schemas/
+│   ├── services/
+│   ├── errors.py
+│   ├── extensions.py
+│   └── __init__.py
 │
-├── instance/                # Banco SQLite
+├── instance/
+├── docker-compose.yml
 ├── requirements.txt
 ├── run.py
 ├── README.md
@@ -97,23 +83,19 @@ flask-products-api/
 
 # 🛣 Endpoints da API
 
-Todas as respostas seguem o padrão JSON.
-
-| Método | Endpoint | Descrição | Status |
-|---------|----------|-----------|--------|
-| GET | `/api/products` | Lista todos os produtos | 200 |
-| POST | `/api/products` | Cria um novo produto | 201 |
-| GET | `/api/products/<id>` | Busca produto por ID | 200 / 404 |
-| PUT | `/api/products/<id>` | Atualiza um produto | 200 / 404 |
-| DELETE | `/api/products/<id>` | Remove um produto | 200 / 404 |
+| Método | Endpoint | Descrição |
+|---------|----------|-----------|
+| GET | `/api/products` | Lista todos os produtos |
+| POST | `/api/products` | Cria um novo produto |
+| GET | `/api/products/<id>` | Busca produto pelo ID |
+| PUT | `/api/products/<id>` | Atualiza um produto |
+| DELETE | `/api/products/<id>` | Remove um produto |
 
 ---
 
-# 📦 Exemplo de Payload
+# 📦 Exemplo de Requisição
 
-## Criar Produto
-
-**POST** `/api/products`
+## POST `/api/products`
 
 ```json
 {
@@ -142,34 +124,13 @@ Todas as respostas seguem o padrão JSON.
 
 ---
 
-# 🚨 Tratamento de Erros
-
-A API possui tratamento global de exceções.
-
-## Exemplo de erro de validação
-
-```json
-{
-  "error": "Erro de validação nos dados enviados",
-  "details": [
-    {
-      "loc": ["price"],
-      "msg": "Input should be greater than 0",
-      "type": "greater_than"
-    }
-  ],
-  "status": 422
-}
-```
-
----
-
-# 🚀 Como Executar
+# 🚀 Como Executar o Projeto
 
 ## Pré-requisitos
 
 - Python 3.10+
-- Git
+- Docker
+- Docker Desktop
 
 ---
 
@@ -183,9 +144,9 @@ cd flask-products-api
 
 ---
 
-## 2. Crie um ambiente virtual
+## 2. Crie e ative o ambiente virtual
 
-### Windows
+### Windows (PowerShell)
 
 ```bash
 python -m venv venv
@@ -211,7 +172,21 @@ pip install -r requirements.txt
 
 ---
 
-## 4. Execute a aplicação
+## 4. Inicie o PostgreSQL com Docker Compose
+
+```bash
+docker compose up -d
+```
+
+Verifique se o container está em execução:
+
+```bash
+docker compose ps
+```
+
+---
+
+## 5. Execute a API Flask
 
 ```bash
 python run.py
@@ -225,7 +200,7 @@ http://127.0.0.1:5000
 
 ---
 
-## 📖 Swagger
+# 📖 Documentação Swagger
 
 A documentação interativa pode ser acessada em:
 
@@ -235,24 +210,81 @@ http://127.0.0.1:5000/apidocs/
 
 ---
 
+# 🛠️ Comandos Úteis do Docker
+
+### Verificar containers
+
+```bash
+docker compose ps
+```
+
+### Visualizar logs do PostgreSQL
+
+```bash
+docker compose logs -f db
+```
+
+### Parar os containers
+
+```bash
+docker compose down
+```
+
+### Reiniciar os containers
+
+```bash
+docker compose restart
+```
+
+### Remover containers e volumes
+
+```bash
+docker compose down -v
+```
+
+---
+
+# 🚨 Tratamento de Erros
+
+A API retorna respostas padronizadas para erros de validação e recursos inexistentes.
+
+Exemplo de erro de validação:
+
+```json
+{
+  "error": "Erro de validação nos dados enviados",
+  "details": [
+    {
+      "loc": ["price"],
+      "msg": "Input should be greater than 0",
+      "type": "greater_than"
+    }
+  ],
+  "status": 422
+}
+```
+
+---
+
 # 🤝 Contribuição
 
-Contribuições são sempre bem-vindas!
+Contribuições são bem-vindas!
 
 1. Faça um **Fork** do projeto.
-2. Crie uma branch para sua funcionalidade.
+
+2. Crie uma branch:
 
 ```bash
 git checkout -b feature/NovaFuncionalidade
 ```
 
-3. Faça o commit.
+3. Faça seus commits:
 
 ```bash
 git commit -m "feat: adiciona nova funcionalidade"
 ```
 
-4. Envie para o GitHub.
+4. Envie para o GitHub:
 
 ```bash
 git push origin feature/NovaFuncionalidade
@@ -266,6 +298,6 @@ git push origin feature/NovaFuncionalidade
 
 ### ⭐ Se este projeto foi útil para você, deixe uma estrela no repositório!
 
-Desenvolvido utilizando **Flask**, **SQLAlchemy**, **Pydantic** e **Swagger/OpenAPI**.
+**Flask • PostgreSQL • SQLAlchemy • Docker • Swagger/OpenAPI**
 
 </div>
