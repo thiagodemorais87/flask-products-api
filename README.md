@@ -59,3 +59,30 @@ A aplicação segue a separação de responsabilidades em 5 camadas principais:
                       ┌──────────────────┐
                       │ Database (Model) │
                       └──────────────────┘
+
+## Estrutura de Diretórios
+```text
+
+flask-products-api/
+├── app/
+│   ├── models/          # Entidades do Banco de Dados (SQLAlchemy)
+│   ├── repositories/    # Consultas diretas ao Banco de Dados
+│   ├── routes/          # Endpoints HTTP / Blueprints e Swagger Docs
+│   ├── schemas/         # Validação de dados e entrada (Pydantic)
+│   ├── services/        # Regras de negócio da aplicação
+│   ├── errors.py        # Captura e tratamento global de exceções
+│   ├── extensions.py    # Inicialização das extensões (db, etc)
+│   └── __init__.py      # Factory da aplicação Flask
+├── instance/            # Arquivos locais (ex: banco SQLite)
+├── .gitignore
+├── README.md
+├── requirements.txt     # Dependências do projeto
+└── run.py               # Ponto de entrada para inicialização do servidor
+
+
+Método,Endpoint,Descrição,Status HTTP
+GET,/api/products,Lista todos os produtos cadastrados,200 OK
+POST,/api/products,Cadastra um novo produto,201 Created
+GET,/api/products/<id>,Busca um produto pelo ID,200 OK / 404 Not Found
+PUT,/api/products/<id>,Atualiza os dados de um produto,200 OK / 404 Not Found
+DELETE,/api/products/<id>,Remove um produto do banco,200 OK / 404 Not Found
